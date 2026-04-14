@@ -1,0 +1,9 @@
+[
+  {"name": "账号1", "email": "user1@example.com", "password": "your_password_1"},
+  {"name": "账号2", "email": "user2@example.com", "password": "your_password_2"},
+  {"name": "账号3", "email": "user3@example.com", "password": "your_password_3"},
+  {"name": "账号4", "email": "user4@example.com", "password": "your_password_4"},
+  {"name": "账号5", "email": "user5@example.com", "password": "your_password_5"},
+  {"name": "账号6", "email": "user6@example.com", "password": "your_password_6"},
+  {"name": "账号7", "email": "user7@example.com", "password": "your_password_7"}
+]

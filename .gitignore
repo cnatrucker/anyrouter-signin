@@ -1,0 +1,7 @@
+accounts.json
+__pycache__/
+*.pyc
+.env
+screenshots/
+balance_hash.txt
+.claude/
