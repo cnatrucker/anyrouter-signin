@@ -120,6 +120,16 @@ async def login_account(playwright, account_name, email, password):
         await page.wait_for_timeout(2000)
         await save_screenshot(page, f"{account_name}_01_login_page.png")
 
+        # 关闭可能存在的弹窗/遮罩层（Semi Design portal）
+        try:
+            await page.keyboard.press("Escape")
+            await page.wait_for_timeout(500)
+            # 点击页面空白处关闭残余弹窗
+            await page.mouse.click(10, 10)
+            await page.wait_for_timeout(500)
+        except Exception:
+            pass
+
         # 定位并填写邮箱
         email_input = (
             page.locator('input[name="email"]')
@@ -129,6 +139,7 @@ async def login_account(playwright, account_name, email, password):
             .or_(page.locator('input[placeholder*="email" i]'))
         )
         await email_input.first.wait_for(state="visible", timeout=10000)
+        await email_input.first.click(force=True)
         await email_input.first.fill(email)
         print(f"  [{account_name}] 已填写邮箱")
 
@@ -138,18 +149,26 @@ async def login_account(playwright, account_name, email, password):
             .or_(page.locator('input[type="password"]'))
             .or_(page.locator('input[id="password"]'))
         )
+        await password_input.first.click(force=True)
         await password_input.first.fill(password)
         print(f"  [{account_name}] 已填写密码")
 
-        # 点击登录按钮
+        # 再次尝试关闭弹窗
+        try:
+            await page.keyboard.press("Escape")
+            await page.wait_for_timeout(500)
+        except Exception:
+            pass
+        await save_screenshot(page, f"{account_name}_02_before_click.png")
+
+        # 点击登录按钮（force=True 绕过遮罩层）
         login_button = (
-            page.locator('button:has-text("登录")')
+            page.locator('button[type="submit"]')
+            .or_(page.locator('button:has-text("登录")'))
             .or_(page.locator('button:has-text("Login")'))
             .or_(page.locator('button:has-text("登 录")'))
-            .or_(page.locator('button[type="submit"]'))
-            .or_(page.locator('input[type="submit"]'))
         )
-        await login_button.first.click()
+        await login_button.first.click(force=True)
         print(f"  [{account_name}] 已点击登录按钮")
 
         # 等待登录成功（URL 变化）
