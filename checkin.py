@@ -13,6 +13,7 @@ AnyRouter 多账号自动登录签到脚本
 import asyncio
 import json
 import os
+import random
 import sys
 from datetime import datetime
 
@@ -333,6 +334,12 @@ async def main():
     if proxy:
         print(f"[INFO] 代理: {proxy}")
 
+    # 随机延迟 0~20 分钟，避免整点触发被识别为自动化
+    delay_seconds = random.randint(0, 20 * 60)
+    delay_minutes = delay_seconds / 60
+    print(f"[INFO] 随机等待 {delay_minutes:.1f} 分钟后开始...")
+    await asyncio.sleep(delay_seconds)
+
     success_count = 0
     results = []
 
@@ -362,9 +369,9 @@ async def main():
                 success_count += 1
             results.append((name, success))
 
-            # 账号间间隔，避免频率限制
+            # 账号间随机间隔 3~15 秒
             if i < total - 1:
-                delay = 3
+                delay = random.randint(3, 15)
                 print(f"  等待 {delay} 秒...")
                 await asyncio.sleep(delay)
 
