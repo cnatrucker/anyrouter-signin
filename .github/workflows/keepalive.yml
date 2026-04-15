@@ -1,0 +1,14 @@
+name: Keepalive - 防止仓库被判定不活跃
+on:
+  schedule:
+    - cron: '23 3 * * 1'  # 每周一 UTC 3:23（北京时间 11:23）
+  workflow_dispatch:
+
+jobs:
+  keepalive:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gautamkrishnar/keepalive-workflow@v2
