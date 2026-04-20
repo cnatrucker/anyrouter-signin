@@ -8,7 +8,22 @@ jobs:
   keepalive:
     runs-on: ubuntu-latest
     permissions:
-      actions: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: gautamkrishnar/keepalive-workflow@v2
+
+      - name: 更新 keepalive 时间戳
+        run: |
+          printf '%s\n' "$(date -u +'%Y-%m-%dT%H:%M:%SZ')" > .github/keepalive
+
+      - name: 提交 keepalive 更新
+        run: |
+          if git diff --quiet -- .github/keepalive; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .github/keepalive
+          git commit -m "chore: keep repository active"
+          git push
