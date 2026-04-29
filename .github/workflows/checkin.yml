@@ -7,6 +7,8 @@ on:
 jobs:
   checkin:
     runs-on: ubuntu-latest
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: /home/runner/.cache/ms-playwright
     steps:
     - uses: actions/checkout@v4
 
@@ -31,11 +33,21 @@ jobs:
       uses: actions/cache@v4
       id: pw-cache
       with:
-        path: ~/.cache/ms-playwright
+        path: /home/runner/.cache/ms-playwright
         key: ${{ runner.os }}-playwright-${{ steps.pw-version.outputs.version }}
 
     - name: 安装 Playwright 浏览器和系统依赖
-      run: playwright install chromium --with-deps
+      run: python -m playwright install chromium --with-deps
+
+    - name: 验证 Playwright 浏览器可执行文件
+      run: |
+        python - <<'PY'
+        from playwright.sync_api import sync_playwright
+        with sync_playwright() as p:
+            browser = p.chromium.launch(headless=True)
+            browser.close()
+        print('Playwright chromium launch OK')
+        PY
 
     - name: 执行签到
       env:
