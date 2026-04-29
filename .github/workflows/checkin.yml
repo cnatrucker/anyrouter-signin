@@ -34,13 +34,8 @@ jobs:
         path: ~/.cache/ms-playwright
         key: ${{ runner.os }}-playwright-${{ steps.pw-version.outputs.version }}
 
-    - name: 安装 Playwright 浏览器
-      if: steps.pw-cache.outputs.cache-hit != 'true'
+    - name: 安装 Playwright 浏览器和系统依赖
       run: playwright install chromium --with-deps
-
-    - name: 安装 Playwright 系统依赖
-      if: steps.pw-cache.outputs.cache-hit == 'true'
-      run: playwright install-deps chromium
 
     - name: 执行签到
       env:
